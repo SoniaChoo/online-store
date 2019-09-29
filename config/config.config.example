@@ -1,0 +1,6 @@
+#Please make sure these environment variables are set
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASS=
+DB_NAME=
