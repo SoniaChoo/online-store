@@ -60,3 +60,8 @@ func InsertUser(u model.User) error {
 
 	return nil
 }
+
+// TODO: implement update function.
+func updateUser(user, newUser model.User) error {
+
+}
