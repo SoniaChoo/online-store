@@ -5,3 +5,10 @@ type User struct {
 	Email  string
 	Passwd string
 }
+
+type ChangeUser struct {
+	Email  string
+	Passwd string
+	NewEmail string
+	NewPasswd string
+}
