@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", myHttp.RegisterHandler)
-	http.ListenAndServe(":12345", nil)
+	http.HandleFunc("/user/register", myHttp.RegisterHandler)
+	http.HandleFunc("/", myHttp.TimeHandler)
+	http.ListenAndServe(":80", nil)
 }

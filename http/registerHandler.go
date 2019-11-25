@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/SoniaChoo/online-store/service"
+
 	"github.com/SoniaChoo/online-store/db"
 	"github.com/SoniaChoo/online-store/model"
 )
@@ -42,7 +44,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check user variable
-	
+
 	// insert user info into database
 	if err = db.InsertUser(user); err != nil {
 		log.Printf("create user failed, error is %s\n", err.Error())
@@ -86,17 +88,17 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check user variable
-	
+
 	// insert user info into database
-	oldU := model.User {
-			changeuser.Email,
-			changeuser.Passwd,
+	oldU := model.User{
+		changeuser.Email,
+		changeuser.Passwd,
 	}
 	newU := model.User{
 		changeuser.NewEmail,
 		changeuser.NewPasswd,
 	}
-	if err = db.UpdateUser(oldU, newU ); err != nil {
+	if err = db.UpdateUser(oldU, newU); err != nil {
 		log.Printf("update user failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "User update failed!")
@@ -138,9 +140,9 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check user variable
-	
+
 	// delete user info into database
-	
+
 	if err = db.DeleteUser(user); err != nil {
 		log.Printf("delete user failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -181,20 +183,28 @@ func RetrieveHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "retrive user info wrong!")
 		return
 	}
- 
+
 	// check user variable
-	
+
 	// delete user info into database
 	var user model.User
 	if user, err = db.RetrieveUser(user1.Email); err != nil {
 		log.Printf("retrive user failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "User retrive failed!")
-		return 
+		return
 	}
 
 	// write response to client
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "User %s successfully retrive!", user.Email)
 
+}
+
+func TimeHandler(w http.ResponseWriter, r *http.Request) {
+	res1, res2 := service.GetTime()
+
+	// write response to client
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "From Nakai to Roppongi, next: %d minutes, next next %d minutes.", res1, res2)
 }
