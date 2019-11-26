@@ -10,5 +10,5 @@ import (
 func main() {
 	//http.HandleFunc("/user/register", myHttp.RegisterHandler)
 	http.HandleFunc("/", myHttp.TimeHandler)
-	log.Fatal(http.ListenAndServe(":443", nil))
+	log.Fatal(http.ListenAndServe(":80", nil))
 }

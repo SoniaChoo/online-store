@@ -30,7 +30,7 @@ var data = [][]int{
 	{23, 8, 17, 27, 35, 44, 54},
 }
 
-func GetTime() (int, int) {
+func GetTime() (int, int, int, int) {
 	m := make(map[int][]int, N)
 	for i := 0; i < N; i++ {
 		inputSlice := data[i]
@@ -46,7 +46,7 @@ func GetTime() (int, int) {
 	if !ok {
 		res1 = (4-nowHour)*60 + (60 + 14 - nowMinute)
 		res2 = res1 + (28 - 14)
-		return res1, res2
+		return res1, res2, nowHour, nowMinute
 	}
 
 	index := sort.SearchInts(v, nowMinute)
@@ -61,5 +61,5 @@ func GetTime() (int, int) {
 		res1 = v[index] - nowMinute
 		res2 = v[index+1] - nowMinute
 	}
-	return res1, res2
+	return res1, res2, nowHour, nowMinute
 }
