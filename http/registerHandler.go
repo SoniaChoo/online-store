@@ -202,9 +202,10 @@ func RetrieveHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func TimeHandler(w http.ResponseWriter, r *http.Request) {
-	res1, res2, nowHour, nowMinute := service.GetTime()
+	nowHour, nowMinute, goWorkRes1, goWorkRes2, backHomeRes1, backHomeRes2 := service.GetTime()
 
 	// write response to client
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Nowtime: %02d:%02d\nFrom Nakai to Roppongi, next: %d minutes, next next %d minutes.", nowHour, nowMinute, res1, res2)
+	outputF := "Nowtime: %02d:%02d\n\n\n\nWORK, from Nakai to Roppongi, next: %d minutes, next next %d minutes.\n\n\n\nHOME, from Roppongi to Nakai, next: %d minutes, next next %d minutes.\n\n\n\n"
+	fmt.Fprintf(w, outputF, nowHour, nowMinute, goWorkRes1, goWorkRes2, backHomeRes1, backHomeRes2)
 }
