@@ -7,7 +7,7 @@ type User struct {
 }
 
 type ChangeUser struct {
-	Email  string
+	ConflictTest string
 	Passwd string
 	NewEmail string
 	NewPasswd string
