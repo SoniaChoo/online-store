@@ -17,8 +17,8 @@ func InsertUser(u model.User) error {
 	// start to execute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	_, err = db.QueryContext(ctx, "insert into user(email, passwd) values(?,?)",
-		u.Email, u.Passwd)
+	_, err = db.QueryContext(ctx, "insert into user(user_id, phone, nickname,password,creat_time) values(?,?,?,?,?)",
+		u.UserId, u.Phone,u.Nickname,u.Password, u.CreatTime)
 	if err != nil {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err
