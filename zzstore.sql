@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50727
 File Encoding         : 65001
 
-Date: 2020-01-12 19:53:08
+Date: 2020-01-12 20:09:21
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -41,7 +41,7 @@ CREATE TABLE `order_detail` (
   `dish_id` int(11) DEFAULT NULL,
   `rest_id` int(11) DEFAULT NULL,
   `order_id` int(11) DEFAULT NULL,
-  `price` float DEFAULT NULL,
+  `price` float NOT NULL,
   `number` int(11) NOT NULL,
   PRIMARY KEY (`detail_id`),
   KEY `order_id` (`order_id`),
