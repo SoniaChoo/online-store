@@ -18,7 +18,7 @@ func InsertOrder(o model.Orders) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 	_, err = db.QueryContext(ctx, "insert into orders(user_id, status, price) values(?,?,?)",
-		o.UserId, o.Status,o.Price)
+		o.UserId, o.Status, o.Price)
 	if err != nil {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err
