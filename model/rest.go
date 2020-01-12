@@ -2,10 +2,11 @@ package model
 
 import "time"
 
-type User struct {
+type Rest struct {
+	RestId int
 	UserId int
 	Phone string
-	Nickname string
-	Password string
+	RestName string
+	Address string
 	CreatTime time.Time
 }
