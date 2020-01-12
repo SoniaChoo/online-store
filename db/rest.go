@@ -17,8 +17,8 @@ func InsertRest(r model.Rest) error {
 	// start to execute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	_, err = db.QueryContext(ctx, "insert into user(rest_id, user_id, phone, rest_name, address, creat_time) values(?,?,?,?,?,?)",
-		r.RestId, r.UserId, r.Phone, r.RestName, r.Address, r.CreatTime)
+	_, err = db.QueryContext(ctx, "insert into rest(user_id, phone, rest_name, address) values(?,?,?,?)",
+		r.UserId, r.Phone, r.RestName, r.Address)
 	if err != nil {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err

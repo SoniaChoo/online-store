@@ -17,8 +17,8 @@ func InsertPicture(p model.Picture) error {
 	// start to execute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	_, err = db.QueryContext(ctx, "insert into user(pic_id, dish_id, user_id, rest_id, pic_path, first_pic, creat_time) values(?,?,?,?,?,?,?)",
-		p.PicId, p.DishId, p.UserId, p.RestId, p.PicPath, p.FirstPic, p.CreatTime)
+	_, err = db.QueryContext(ctx, "insert into picture(types, pic_path, first_pic) values(?,?,?)",
+		p.Types, p.PicPath, p.FirstPic)
 	if err != nil {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50727
 File Encoding         : 65001
 
-Date: 2020-01-02 22:48:15
+Date: 2020-01-12 19:53:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -30,11 +30,7 @@ CREATE TABLE `dish` (
   PRIMARY KEY (`dish_id`),
   KEY `rest_id` (`rest_id`),
   CONSTRAINT `dish_ibfk_1` FOREIGN KEY (`rest_id`) REFERENCES `rest` (`rest_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of dish
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for order_detail
@@ -45,20 +41,16 @@ CREATE TABLE `order_detail` (
   `dish_id` int(11) DEFAULT NULL,
   `rest_id` int(11) DEFAULT NULL,
   `order_id` int(11) DEFAULT NULL,
-  `price` float NOT NULL,
+  `price` float DEFAULT NULL,
   `number` int(11) NOT NULL,
   PRIMARY KEY (`detail_id`),
-  KEY `rest_id` (`rest_id`),
   KEY `order_id` (`order_id`),
   KEY `dish_id` (`dish_id`),
-  CONSTRAINT `order_detail_ibfk_1` FOREIGN KEY (`rest_id`) REFERENCES `rest` (`rest_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  KEY `rest_id` (`rest_id`),
   CONSTRAINT `order_detail_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `order_detail_ibfk_3` FOREIGN KEY (`dish_id`) REFERENCES `dish` (`dish_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of order_detail
--- ----------------------------
+  CONSTRAINT `order_detail_ibfk_3` FOREIGN KEY (`dish_id`) REFERENCES `dish` (`dish_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `order_detail_ibfk_4` FOREIGN KEY (`rest_id`) REFERENCES `rest` (`rest_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for orders
@@ -68,15 +60,12 @@ CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `status` int(11) NOT NULL,
+  `price` float DEFAULT NULL,
   `creat_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of orders
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for picture
@@ -84,31 +73,19 @@ CREATE TABLE `orders` (
 DROP TABLE IF EXISTS `picture`;
 CREATE TABLE `picture` (
   `pic_id` int(11) NOT NULL AUTO_INCREMENT,
-  `dish_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `rest_id` int(11) DEFAULT NULL,
+  `types` int(11) NOT NULL,
   `pic_path` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `first_pic` int(11) NOT NULL,
   `creat_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`pic_id`),
-  KEY `dish_id` (`dish_id`),
-  KEY `user_id` (`user_id`),
-  KEY `rest_id` (`rest_id`),
-  CONSTRAINT `picture_ibfk_1` FOREIGN KEY (`dish_id`) REFERENCES `dish` (`dish_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `picture_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `picture_ibfk_3` FOREIGN KEY (`rest_id`) REFERENCES `rest` (`rest_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of picture
--- ----------------------------
+  PRIMARY KEY (`pic_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for rest
 -- ----------------------------
 DROP TABLE IF EXISTS `rest`;
 CREATE TABLE `rest` (
-  `rest_id` int(11) NOT NULL,
+  `rest_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `rest_name` varchar(255) NOT NULL,
@@ -117,11 +94,7 @@ CREATE TABLE `rest` (
   PRIMARY KEY (`rest_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `rest_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of rest
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user
@@ -134,8 +107,4 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `creat_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of user
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
