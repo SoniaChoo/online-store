@@ -4,9 +4,7 @@ import "time"
 
 type Picture struct {
 	PicId     int
-	DishId    int
-	UserId    int
-	RestId    int
+	Types     int
 	PicPath   string
 	FirstPic  int
 	CreatTime time.Time
