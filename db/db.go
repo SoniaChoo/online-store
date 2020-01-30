@@ -34,6 +34,7 @@ func connectDB() (*sql.DB, error) {
 	fmt.Fprint(&dataSourName, env.DBPort)
 	fmt.Fprint(&dataSourName, ")/")
 	fmt.Fprint(&dataSourName, env.DBName)
+	fmt.Fprint(&dataSourName, "?parseTime=true")
 	//log.Printf("database configuration string is %s\n", dataSourName.String())
 
 	// connect database
