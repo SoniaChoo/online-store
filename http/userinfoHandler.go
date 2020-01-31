@@ -13,7 +13,7 @@ import (
 
 // userinfoHandler is the function for inputing userinfo,
 // parameters: name,age, gender, address.
-func UserinfoHandler(w http.ResponseWriter, r *http.Request) {//zhuzhu:更新了函数名
+func UserinfoHandler(w http.ResponseWriter, r *http.Request) { //zhuzhu:更新了函数名
 	// check the request info, not needed, just for understanding.
 	log.Println("Method:", r.Method)
 	log.Println("URL:", r.URL, "URL.Path", r.URL.Path)
@@ -33,7 +33,7 @@ func UserinfoHandler(w http.ResponseWriter, r *http.Request) {//zhuzhu:更新了
 	defer r.Body.Close() // remember to close network connection
 
 	// unmarshal the byte data into User info
-	var user model.UserInfo//zhuzhu:更新了user的类型
+	var user model.UserInfo //zhuzhu:更新了user的类型
 	if err = json.Unmarshal(reqBytes, &user); err != nil {
 		log.Printf("Read user info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -42,7 +42,7 @@ func UserinfoHandler(w http.ResponseWriter, r *http.Request) {//zhuzhu:更新了
 	}
 
 	// insert user info into database
-	if err = db.InsertUserInfo(user); err != nil {//zhuzhu:更新了函数的名字
+	if err = db.InsertUserInfo(user); err != nil { //zhuzhu:更新了函数的名字
 		log.Printf("create user failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "User register failed!")
@@ -51,5 +51,5 @@ func UserinfoHandler(w http.ResponseWriter, r *http.Request) {//zhuzhu:更新了
 
 	// write response to client
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "User %s successfully registered!", user.Name)//zhuzhu:这里也要改
+	fmt.Fprintf(w, "User %s successfully registered!", user.Name) //zhuzhu:这里也要改
 }

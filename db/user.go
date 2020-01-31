@@ -2,11 +2,10 @@ package db
 
 import (
 	"context"
-	"errors"
+	"github.com/SoniaChoo/online-store/model"
+	"github.com/pkg/errors"
 	"log"
 	"time"
-
-	"github.com/SoniaChoo/online-store/model"
 )
 
 const NotMatchError = "sql: no rows in result set"

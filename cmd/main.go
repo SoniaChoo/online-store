@@ -1,9 +1,8 @@
 package main
 
 import (
-	"net/http"
-
 	myHttp "github.com/SoniaChoo/online-store/http"
+	"net/http"
 )
 
 func main() {
