@@ -1,9 +1,8 @@
 package config
 
 import (
-	"errors"
-
 	"github.com/kelseyhightower/envconfig"
+	"github.com/pkg/errors"
 )
 
 // Env is the must environment config for database
