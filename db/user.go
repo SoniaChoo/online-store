@@ -61,7 +61,7 @@ func RetrieveUserId(u *model.User) ([]*model.User, error) {
 	defer cancel()
 
 	//store the result by slice
-	user := []*model.User{}
+	users := []*model.User{}
 	row, err := db.QueryContext(ctx, "select * from user where user_id = ?", u.UserId)
 	if err != nil {
 		log.Printf("record retrieve with error %s\n", err.Error())
@@ -75,8 +75,66 @@ func RetrieveUserId(u *model.User) ([]*model.User, error) {
 			log.Printf("retrieving record loop with error %s\n", err.Error())
 			return nil, err
 		}
-		user = append(user, temp)
+		users = append(users, temp)
 	}
 
-	return user, nil
+	return users, nil
+}
+
+func RetrieveUserPhone(u *model.User) ([]*model.User, error) {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+
+	//store the result by slice
+	users := []*model.User{}
+	row, err := db.QueryContext(ctx, "select * from user where phone = ?", u.Phone)
+	if err != nil {
+		log.Printf("record retrieve with error %s\n", err.Error())
+		return nil, err
+	}
+	defer row.Close()
+
+	for row.Next() {
+		temp :=  &model.User{}
+		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime); err != nil {
+			log.Printf("retrieving record loop with error %s\n", err.Error())
+			return nil, err
+		}
+		users = append(users, temp)
+	}
+	return users, nil
+}
+
+func RetrieveUserNickname(u *model.User) ([]*model.User, error) {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)//为什么err,err.Error
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+
+	//store the result by slice
+	users := []*model.User{}
+	row, err := db.QueryContext(ctx, "select * from user where nickname = ?", u.Nickname)
+	if err != nil {
+		log.Printf("record retrieve with error %s\n", err.Error())
+		return nil, err
+	}
+	defer row.Close()
+
+	for row.Next() {
+		temp := &model.User{}
+		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime); err != nil {
+			log.Printf("retrieving record loop with error %s\n", err.Error())
+			return nil, err
+		}
+		users = append(users, temp)
+	}
+	return users, nil
 }
