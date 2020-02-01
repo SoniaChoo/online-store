@@ -33,6 +33,7 @@ func LoginUser(u *model.User) error {
 	db, err := DBFactory()
 	if err != nil {
 		log.Printf("error connect database, %v\n", err)
+		return err
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
