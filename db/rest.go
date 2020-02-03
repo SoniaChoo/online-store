@@ -9,7 +9,7 @@ import (
 )
 
 // InsertRest is to insert a rest info into database
-func InsertRest(r model.Rest) error {
+func InsertRest(r *model.Rest) error {
 	db, err := DBFactory()
 	if err != nil {
 		log.Printf("error connect database, %v\n", err)
