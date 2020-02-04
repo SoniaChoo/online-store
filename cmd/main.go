@@ -13,5 +13,6 @@ func main() {
 	http.HandleFunc("/user/retrieve/nickname", myHttp.RetrieveNicknameHandler)
 	http.HandleFunc("/rest/register", myHttp.RegisterHandlerRest)
 	http.HandleFunc("/rest/showdishes", myHttp.ShowDishesHandlerRest)
+	http.HandleFunc("/rest/retrieve", myHttp.RetrieveHandlerRest)
 	http.ListenAndServe(":12345", nil)
 }
