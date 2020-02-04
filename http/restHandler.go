@@ -33,9 +33,9 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//check rest variable
-	if rest.Phone == "" || rest.Address == "" || rest.RestName == "" {
+	if rest.UserId == 0 || rest.Phone == "" || rest.Address == "" || rest.RestName == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "phone/address/restname should not be empty!")
+		fmt.Fprintf(w, "userid should not be zero, phone/address/restname/ should not be empty!")
 		return
 	}
 
@@ -51,5 +51,5 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Rest %v is successfully registered!")
+	fmt.Fprintf(w, "Rest %v is successfully registered!", rest)
 }
