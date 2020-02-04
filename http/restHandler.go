@@ -50,4 +50,6 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Rest register failed!")
 		return
 	}
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Rest %v is successfully registered!")
 }
