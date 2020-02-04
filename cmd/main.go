@@ -9,5 +9,7 @@ func main() {
 	http.HandleFunc("/user/register", myHttp.RegisterHandler)
 	http.HandleFunc("/user/login", myHttp.LoginHandler)
 	http.HandleFunc("/user/retrieve/userid", myHttp.RetrieveIdHandler)
+	http.HandleFunc("/user/retrieve/phone", myHttp.RetrievePhoneHandler)
+	http.HandleFunc("/user/retrieve/nickname", myHttp.RetrieveNicknameHandler)
 	http.ListenAndServe(":12345", nil)
 }

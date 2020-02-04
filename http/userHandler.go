@@ -140,3 +140,68 @@ func RetrieveIdHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "User %v is successfully retrieved!", users)
 }
+
+func RetrievePhoneHandler(w http.ResponseWriter, r *http.Request) {
+	//get the request info
+	reqBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Read request error! Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "User request error!")
+		return
+	}
+	defer r.Body.Close() //ember to close network connection
+
+	//unmarshal the byte data into User info
+	var user model.User
+	if err = json.Unmarshal(reqBytes, &user); err != nil {
+		log.Printf("Read user info error!, Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "User retrieve wrong")
+		return
+	}
+
+	//retrieve user from database
+	users, err := db.RetrieveUserPhone(&user)
+	if err != nil {
+		log.Printf("retrieve user failed, error is %s\n", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "User retrieve failed")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "User %v is successfully retrieved!", users)
+}
+
+func RetrieveNicknameHandler(w http.ResponseWriter, r *http.Request) {
+	//get the request info
+	reqBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Read request error! Error is  %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "User request error!")
+		return
+	}
+	defer r.Body.Close()
+
+	//unmarshal the byte data into User info
+	var user model.User
+	if err = json.Unmarshal(reqBytes, &user); err != nil {
+		log.Printf("retrieve user failed, error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "User retrieve failed")
+		return
+	}
+
+	//retrieve user from database
+	users, err := db.RetrieveUserNickname(&user)
+	if err != nil {
+		log.Printf("retrieve user failed")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "User retrieve failed")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "User %v is successfully retrieved!", users)
+}
+
