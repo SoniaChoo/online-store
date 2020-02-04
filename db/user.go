@@ -48,6 +48,7 @@ func LoginUser(u *model.User) error {
 		log.Printf(NotMatchError)
 		return errors.New(NotMatchError)
 	}
+
 	return nil
 }
 
