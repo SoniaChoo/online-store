@@ -23,6 +23,7 @@ func InsertRest(r *model.Rest) error {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err
 	}
+
 	return nil
 }
 
@@ -53,9 +54,6 @@ func ShowDishesRest(r *model.Rest) ([]*model.Dish, error) {
 		}
 		dishes = append(dishes, temp)
 	}
+
 	return dishes, nil
 }
-
-
-
-

@@ -50,6 +50,7 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Rest register failed!")
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Rest %v is successfully registered!", rest)
 }
@@ -81,7 +82,7 @@ func ShowDishesHandlerRest(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "show dishes failed, can't show this rest's dishes, error is %s\n", err.Error())
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "all dishes of rest %v are successfully showed as following: %v\n", rest.RestId, dishes)
 }
-
