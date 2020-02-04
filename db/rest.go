@@ -23,10 +23,8 @@ func InsertRest(r *model.Rest) error {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err
 	}
-
 	return nil
 }
-
 
 func ShowDishesRest(r *model.Rest) ([]*model.Dish, error) {
 	db, err := DBFactory()
@@ -57,6 +55,7 @@ func ShowDishesRest(r *model.Rest) ([]*model.Dish, error) {
 	}
 	return dishes, nil
 }
+
 
 
 

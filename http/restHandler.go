@@ -82,6 +82,6 @@ func ShowDishesHandlerRest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "all dishes of rest %v are successfully showed as followed: \n%v", rest.RestId, dishes)
+	fmt.Fprintf(w, "all dishes of rest %v are successfully showed as following: %v\n", rest.RestId, dishes)
 }
 
