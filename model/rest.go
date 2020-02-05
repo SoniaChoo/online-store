@@ -3,10 +3,11 @@ package model
 import "time"
 
 type Rest struct {
-	RestId    int
-	UserId    int
-	Phone     string
-	RestName  string
-	Address   string
-	CreatTime time.Time
+	RestId     int
+	UserId     int
+	Phone      string
+	RestName   string
+	Address    string
+	CreatTime  time.Time
+	UpdateTime time.Time
 }
