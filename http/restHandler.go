@@ -14,6 +14,7 @@ import (
 const BadJsonRest = "Rest register info wrong"
 
 func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
+	//get the request info
 	reqBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Read request error! Error is %s\n", err.Error())
@@ -45,6 +46,7 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(err.Error(), DuplicateError) {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "This phone has been registered!")
+			return
 		}
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "Rest register failed!")
@@ -76,7 +78,7 @@ func ShowDishesHandlerRest(w http.ResponseWriter, r *http.Request) {
 
 	//search all dishes belong to the rest
 	dishes, err := db.ShowDishesRest(&rest)
-	if  err != nil {
+	if err != nil {
 		log.Printf("show dishes failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "show dishes failed, can't show this rest's dishes, error is %s\n", err.Error())
@@ -111,7 +113,7 @@ func RetrieveHandlerRest(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("retrieve rests failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "no result for this name, error is %s\n", err)
+		fmt.Fprintf(w, "retrieve rest failed, error is %s\n", err)
 		return
 	}
 

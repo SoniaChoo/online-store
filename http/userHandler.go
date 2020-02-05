@@ -41,8 +41,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("user info is %v\n", user)
-
 	// check user variable
 	if user.Phone == "" || user.Password == "" || user.Nickname == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -63,10 +61,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// write response to client
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, SuccessfullyRegister, user.Phone)
-
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -137,6 +133,7 @@ func RetrieveIdHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "User retrieve failed")
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "User %v is successfully retrieved!", users)
 }
@@ -169,6 +166,7 @@ func RetrievePhoneHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "User retrieve failed")
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "User %v is successfully retrieved!", users)
 }
@@ -201,7 +199,7 @@ func RetrieveNicknameHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "User retrieve failed")
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "User %v is successfully retrieved!", users)
 }
-
