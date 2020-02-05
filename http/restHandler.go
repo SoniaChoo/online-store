@@ -118,5 +118,5 @@ func RetrieveHandlerRest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "all rests of contain %v are successfully showed as followed: %v\n", rest.RestName, rests)
+	fmt.Fprintf(w, "all rests of contain %v are successfully showed as following: %v\n", rest.RestName, rests)
 }
