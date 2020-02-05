@@ -57,3 +57,33 @@ func ShowDishesRest(r *model.Rest) ([]*model.Dish, error) {
 
 	return dishes, nil
 }
+
+func RetrieveRest(r *model.Rest) ([]*model.Rest, error) {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return nil, err
+	}
+
+	//start to excute SQL query
+	rests := []*model.Rest{}
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	row, err := db.QueryContext(ctx, "select * from rest where rest_name like ?", "%" + r.RestName + "%")
+	if err != nil {
+		log.Printf("record retrieve rest by restname with error %s\n", err.Error())
+		return nil, err
+	}
+	defer row.Close()
+
+	for row.Next() {
+		temp := &model.Rest{}
+		if err = row.Scan(&temp.RestId, &temp.UserId, &temp.Phone, &temp.RestName, &temp.Address, &temp.CreatTime); err != nil {
+			log.Printf("record retrieving rest loop with error %s\n", err.Error())
+			return nil, err
+		}
+		rests = append(rests, temp)
+	}
+
+	return rests, nil
+}
