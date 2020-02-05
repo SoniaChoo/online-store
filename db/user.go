@@ -17,6 +17,7 @@ func InsertUser(u *model.User) error {
 		log.Printf("error connect database, %v\n", err)
 		return err
 	}
+
 	// start to execute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
@@ -36,14 +37,17 @@ func LoginUser(u *model.User) error {
 		log.Printf("error connect database, %v\n", err)
 		return err
 	}
+
+	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-
 	row, err := db.QueryContext(ctx, "select * from user where phone = ? and password = ? ", u.Phone, u.Password)
 	if err != nil {
 		log.Printf("record login with error %s\n", err.Error())
 		return err
 	}
+	defer row.Close()
+
 	if !row.Next() {
 		log.Printf(NotMatchError)
 		return errors.New(NotMatchError)
@@ -58,10 +62,10 @@ func RetrieveUserId(u *model.User) ([]*model.User, error) {
 		log.Printf("error connect database, %v\n", err)
 		return nil, err
 	}
+
+	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-
-	//store the result by slice
 	users := []*model.User{}
 	row, err := db.QueryContext(ctx, "select * from user where user_id = ?", u.UserId)
 	if err != nil {
@@ -72,7 +76,7 @@ func RetrieveUserId(u *model.User) ([]*model.User, error) {
 
 	for row.Next() {
 		temp := &model.User{}
-		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime); err != nil {
+		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime, &temp.UpdateTime); err != nil {
 			log.Printf("retrieving record loop with error %s\n", err.Error())
 			return nil, err
 		}
@@ -88,10 +92,10 @@ func RetrieveUserPhone(u *model.User) ([]*model.User, error) {
 		log.Printf("error connect database, %v\n", err)
 		return nil, err
 	}
+
+	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-
-	//store the result by slice
 	users := []*model.User{}
 	row, err := db.QueryContext(ctx, "select * from user where phone = ?", u.Phone)
 	if err != nil {
@@ -102,12 +106,13 @@ func RetrieveUserPhone(u *model.User) ([]*model.User, error) {
 
 	for row.Next() {
 		temp := &model.User{}
-		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime); err != nil {
+		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime, &temp.UpdateTime); err != nil {
 			log.Printf("retrieving record loop with error %s\n", err.Error())
 			return nil, err
 		}
 		users = append(users, temp)
 	}
+
 	return users, nil
 }
 
@@ -117,10 +122,10 @@ func RetrieveUserNickname(u *model.User) ([]*model.User, error) {
 		log.Printf("error connect database, %v\n", err) //为什么err,err.Error
 		return nil, err
 	}
+
+	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-
-	//store the result by slice
 	users := []*model.User{}
 	row, err := db.QueryContext(ctx, "select * from user where nickname like ?", "%"+u.Nickname+"%")
 	if err != nil {
@@ -131,11 +136,12 @@ func RetrieveUserNickname(u *model.User) ([]*model.User, error) {
 
 	for row.Next() {
 		temp := &model.User{}
-		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime); err != nil {
+		if err = row.Scan(&temp.UserId, &temp.Phone, &temp.Nickname, &temp.Password, &temp.CreatTime, &temp.UpdateTime); err != nil {
 			log.Printf("retrieving record loop with error %s\n", err.Error())
 			return nil, err
 		}
 		users = append(users, temp)
 	}
+
 	return users, nil
 }
