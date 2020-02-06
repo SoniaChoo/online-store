@@ -13,10 +13,15 @@ import (
 )
 
 const (
-	DuplicateError          = "Error 1062"
-	BadJson                 = "User register info wrong!"
-	RequestParameterMissing = "phone/nickname/password should not be empty!"
-	SuccessfullyRegister    = "User %s successfully registered!"
+	DuplicateError                  = "Error 1062"
+	BadJsonRegister                 = "User register info wrong!"
+	RequestRegisterParameterMissing = "phone/nickname/password should not be empty!"
+	SuccessfullyRegister            = "User %s successfully registered!"
+	BadJsonLogin                    = "User Login fail!"
+	RequestLoginParameterMissing    = "phone/password should not be empty!"
+	SuccessfullyLogin               = "User %s successfully login!"
+	BadJsonRetrieve                 = "User retrieve wrong"
+	SuccessfullyRetrieveId          = "User %v is successfully retrieved!"
 )
 
 // RegisterHandler is the function for user register,
@@ -37,14 +42,14 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBytes, &user); err != nil {
 		log.Printf("Read user info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, BadJson)
+		fmt.Fprintf(w, BadJsonRegister)
 		return
 	}
 
 	// check user variable
 	if user.Phone == "" || user.Password == "" || user.Nickname == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, RequestParameterMissing)
+		fmt.Fprintf(w, RequestRegisterParameterMissing)
 		return
 	}
 
@@ -79,13 +84,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBytes, &user); err != nil {
 		log.Printf("Read user info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "User Login fail!")
+		fmt.Fprintf(w, BadJsonLogin)
 		return
 	}
 
 	if user.Phone == "" || user.Password == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "phone/password should not be empty!")
+		fmt.Fprintf(w, RequestLoginParameterMissing)
 		return
 	}
 
@@ -102,7 +107,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "User %s successfully login!", user.Phone)
+	fmt.Fprintf(w, SuccessfullyLogin, user.Phone)
 }
 
 func RetrieveIdHandler(w http.ResponseWriter, r *http.Request) {
@@ -121,7 +126,7 @@ func RetrieveIdHandler(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBytes, &user); err != nil {
 		log.Printf("Read user info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "User retrieve wrong")
+		fmt.Fprintf(w, BadJsonRetrieve)
 		return
 	}
 
@@ -135,7 +140,7 @@ func RetrieveIdHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "User %v is successfully retrieved!", users)
+	fmt.Fprintf(w, SuccessfullyRetrieveId, users)
 }
 
 func RetrievePhoneHandler(w http.ResponseWriter, r *http.Request) {
@@ -187,7 +192,7 @@ func RetrieveNicknameHandler(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBytes, &user); err != nil {
 		log.Printf("retrieve user failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "User retrieve failed")
+		fmt.Fprintf(w, BadJsonRetrieve)
 		return
 	}
 
