@@ -15,6 +15,7 @@ const (
 	BadJsonRest = "Restaurant register info wrong"
 	RequestParameterMissingRest="userid should not be zero, phone/address/restaurantname/ should not be empty!"
 	SuccessfullyRegisterRest = "Restaurant %s is successfully registered!"
+	SuccessfullyShowdishesRest = "all dishes of restaurant %v are successfully showed as following: %v\n"
 	)
 
 func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +91,7 @@ func ShowDishesHandlerRest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "all dishes of restaurant %v are successfully showed as following: %v\n", rest.RestId, dishes)
+	fmt.Fprintf(w, SuccessfullyShowdishesRest, rest.RestId, dishes)
 }
 
 func RetrieveHandlerRest(w http.ResponseWriter, r *http.Request) {
