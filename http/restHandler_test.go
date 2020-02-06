@@ -198,4 +198,3 @@ func TestRetrieveHandlerRest(t *testing.T) {
 		t.Fatal("read response body error")
 	}
 }
-

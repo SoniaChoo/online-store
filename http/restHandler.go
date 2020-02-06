@@ -41,7 +41,7 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 	//check rest variable
 	if rest.UserId == 0 || rest.Phone == "" || rest.Address == "" || rest.RestName == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w,RequestParameterMissingRest )
+		fmt.Fprintf(w,RequestParameterMissingRest)
 		return
 	}
 
