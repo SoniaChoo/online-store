@@ -11,7 +11,12 @@ import (
 	"strings"
 )
 
-const BadJsonRest = "Restaurant register info wrong"
+const (
+	BadJsonRest = "Restaurant register info wrong"
+	RequestParameterMissingRest="userid should not be zero, phone/address/restaurantname/ should not be empty!"
+	SuccessfullyRegisterRest = "Restaurant %s is successfully registered!"
+	SuccessfullyShowdishesRest = "all dishes of restaurant %v are successfully showed as following: %v\n"
+	)
 
 func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 	//get the request info
@@ -36,7 +41,7 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 	//check rest variable
 	if rest.UserId == 0 || rest.Phone == "" || rest.Address == "" || rest.RestName == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "userid should not be zero, phone/address/restaurantname/ should not be empty!")
+		fmt.Fprintf(w,RequestParameterMissingRest)
 		return
 	}
 
@@ -54,7 +59,7 @@ func RegisterHandlerRest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Restaurant %v is successfully registered!", rest)
+	fmt.Fprintf(w, SuccessfullyRegisterRest, rest.Phone)
 }
 
 func ShowDishesHandlerRest(w http.ResponseWriter, r *http.Request) {
@@ -86,37 +91,5 @@ func ShowDishesHandlerRest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "all dishes of restaurant %v are successfully showed as following: %v\n", rest.RestId, dishes)
-}
-
-func RetrieveHandlerRest(w http.ResponseWriter, r *http.Request) {
-	reqbytes, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Printf("Read request error! Error is %s\n", err.Error())
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Restaurant request error!")
-		return
-	}
-	defer r.Body.Close() //remember to close network connection
-
-	//unmarshal the byte data Rest info
-	var rest model.Rest
-	if err = json.Unmarshal(reqbytes, &rest); err != nil {
-		log.Printf("Read rest info error! Error is %s\n", err.Error())
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, BadJsonRest)
-		return
-	}
-
-	//retrieve rest by restname in a fuzzy match way
-	rests, err := db.RetrieveRest(&rest)
-	if err != nil {
-		log.Printf("retrieve rests failed, error is %s\n", err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "retrieve restaurant failed, error is %s\n", err)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "all restaurants of contain %v are successfully showed as following: %v\n", rest.RestName, rests)
+	fmt.Fprintf(w, SuccessfullyShowdishesRest, rest.RestId, dishes)
 }
