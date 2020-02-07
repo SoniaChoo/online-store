@@ -41,7 +41,7 @@ func ShowDishesDeatil(d *model.Dish) ([]*model.Dish, error) {
 	defer cancel()
 	row, err := db.QueryContext(ctx, "select * from dish where dish_id = ?", d.DishId)
 	if err != nil {
-		log.Printf("record show dishes edtail with error %s\n", err.Error())
+		log.Printf("record show dish detail by dishid %d with error %s\n", d.DishId, err.Error())
 		return nil, err
 	}
 	defer row.Close()
@@ -49,7 +49,7 @@ func ShowDishesDeatil(d *model.Dish) ([]*model.Dish, error) {
 	for row.Next() {
 		temp := &model.Dish{}
 		if err = row.Scan(&temp.DishId, &temp.RestId, &temp.Price, &temp.DishName, &temp.Description, &temp.Stock, &temp.Sales, &temp.Favorite, &temp.CreatTime, &temp.UpdateTime); err != nil {
-			log.Printf("record show dish detail loop with error %s\n", err.Error())
+			log.Printf("record loop show dish detail by dishid %d with error %s\n", d.DishId, err.Error())
 			return nil, err
 		}
 		details = append(details, temp)
