@@ -18,8 +18,8 @@ func InsertDish(d *model.Dish) error {
 	// start to execute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	_, err = db.QueryContext(ctx, "insert into dish(rest_id, price, dish_name, stock, sales) values(?,?,?,?,?)",
-		d.RestId, d.Price, d.DishName, d.Stock, d.Sales)
+	_, err = db.QueryContext(ctx, "insert into dish(rest_id, price, dish_name, description, stock) values(?,?,?,?,?)",
+		d.RestId, d.Price, d.DishName, d.Description, d.Stock)
 	if err != nil {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err

@@ -11,8 +11,10 @@ import (
 )
 
 const (
-	SuccessfullyShowdishDetail = "%v dish's detail is successfully showed ad following: %v\n"
-	BadJsonDish                = "Dish show detail info wrong"
+	SuccessfullyShowdishDetail  = "%v dish's detail is successfully showed ad following: %v\n"
+	BadJsonDish                 = "Dish show detail info wrong"
+	RequestParameterMissingDish = "RestId, DishPrice, DishStock should not be zero, DishName, Description should not be empty"
+	SuccessfullyAddDish         = "Dish %s is successfully added!"
 )
 
 func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
@@ -54,4 +56,48 @@ func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, SuccessfullyShowdishDetail, dish.DishId, details[0])
+}
+
+func AddHandlerDish(w http.ResponseWriter, r *http.Request) {
+	//get the request info
+	reqBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Read request error! Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Dish request error")
+		return
+	}
+	defer r.Body.Close()
+
+	//unmarshal the byte data into Rest info
+	var dish model.Dish
+	if err = json.Unmarshal(reqBytes, &dish); err != nil {
+		log.Printf("Read dish info error! Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, BadJsonDish)
+		return
+	}
+
+	//check rest variable
+	if dish.RestId == 0 || dish.Price == 0 || dish.DishName == "" || dish.Description == "" || dish.Stock == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, RequestParameterMissingDish)
+		return
+	}
+
+	//insert dish info into database
+	if err = db.InsertDish(&dish); err != nil {
+		log.Printf("add dish failed, error is %s\n", err.Error())
+		//if strings.Contains(err.Error(), DuplicateError) {
+		//	w.WriteHeader(http.StatusInternalServerError)
+		//	fmt.Fprintf(w, "This dish had been added")
+		//	return
+		//}
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Dish added failed!")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, SuccessfullyAddDish, dish.DishName)
 }
