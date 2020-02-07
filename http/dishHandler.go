@@ -48,7 +48,7 @@ func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
 	if len(details) != 1 {
 		log.Printf("len(details) should be 1")
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "the result of this dish shoule be unique, but it not, error is %s\n", err.Error())
+		fmt.Fprintf(w, "the result of this dish should be unique, but it's not, error is %s\n", err.Error())
 		return
 	}
 
