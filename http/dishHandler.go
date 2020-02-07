@@ -36,7 +36,7 @@ func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//retrieve dish detail from database
-	detail, err := db.ShowDishesDeatil(&dish)
+	details, err := db.ShowDishesDeatil(&dish)
 	if err != nil {
 		log.Printf("show dish detail failed, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -44,6 +44,14 @@ func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//judge if len(details) = 1
+	if len(details) != 1 {
+		log.Printf("len(details) should be 1")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "the result of this dish shoule be unique, but it not, error is %s\n", err.Error())
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, SuccessfullyShowdishDetail, dish.DishId, detail)
+	fmt.Fprintf(w, SuccessfullyShowdishDetail, dish.DishId, details[0])
 }

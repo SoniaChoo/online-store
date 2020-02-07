@@ -28,7 +28,7 @@ func InsertDish(d *model.Dish) error {
 	return nil
 }
 
-func ShowDishesDeatil(d *model.Dish) (*model.Dish, error) {
+func ShowDishesDeatil(d *model.Dish) ([]*model.Dish, error) {
 	db, err := DBFactory()
 	if err != nil {
 		log.Printf("error connect database, %v\n", err)
@@ -36,7 +36,7 @@ func ShowDishesDeatil(d *model.Dish) (*model.Dish, error) {
 	}
 
 	//start to excute SQL query
-	detail := &model.Dish{}
+	details := []*model.Dish{}
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 	row, err := db.QueryContext(ctx, "select * from dish where dish_id = ?", d.DishId)
@@ -47,13 +47,13 @@ func ShowDishesDeatil(d *model.Dish) (*model.Dish, error) {
 	defer row.Close()
 
 	for row.Next() {
-		temp := model.Dish{}
+		temp := &model.Dish{}
 		if err = row.Scan(&temp.DishId, &temp.RestId, &temp.Price, &temp.DishName, &temp.Description, &temp.Stock, &temp.Sales, &temp.Favorite, &temp.CreatTime, &temp.UpdateTime); err != nil {
 			log.Printf("record show dish detail loop with error %s\n", err.Error())
 			return nil, err
 		}
-		detail = &temp
+		details = append(details, temp)
 	}
 
-	return detail, nil
+	return details, nil
 }

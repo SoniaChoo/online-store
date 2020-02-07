@@ -35,3 +35,28 @@ func TestDetailHandlerDishWithBadJson(t *testing.T) {
 		t.Fatal("expect json format error, got other")
 	}
 }
+
+func TestDetailHandlerDish(t *testing.T) {
+	body := strings.NewReader(`{"dishid":1}`)
+	req, err := http.NewRequest(http.MethodPost, "/dish/detail", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/dish/detail", DetailHandlerDish)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatal("expect 200, got other")
+	}
+
+	_, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+}
