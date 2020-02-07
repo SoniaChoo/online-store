@@ -145,3 +145,51 @@ func TestAddHandlerDish(t *testing.T) {
 		t.Fatal("expect successfully add, got other")
 	}
 }
+
+func TestUpdateHandlerDishWithBadJSon(t *testing.T) {
+	body := strings.NewReader(``)
+	req, err := http.NewRequest(http.MethodPost, "/dish/update", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/dish/update", UpdateHandlerDish)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatal("expect 400, got other")
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+	if string(b) != BadJsonDish {
+		t.Fatal("expect json format error, got other")
+	}
+}
+
+func TestUpdateHandlerDishWithNotAvailable(t *testing.T) {
+	body := strings.NewReader(`{"price":0,"dishname":"maocai","description":"sichuan cai, is delicious","stock":10,"dishid":1}`)
+	req, err := http.NewRequest(http.MethodPost, "dish/update", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/dish/update", UpdateHandlerDish)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusInternalServerError {
+		t.Fatal("expect ")
+	}
+}

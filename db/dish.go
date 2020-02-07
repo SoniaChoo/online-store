@@ -57,3 +57,22 @@ func ShowDishesDeatil(d *model.Dish) ([]*model.Dish, error) {
 
 	return details, nil
 }
+
+func UpdateDish(d *model.Dish) error {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return err
+	}
+
+	//start to excute SQL query
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	//in the SQL statement, "," can not be replaced by "and"
+	_, err = db.QueryContext(ctx, "update dish set price = ?, dish_name = ?, description = ?, stock = ? where dish_id = ? ", d.Price, d.DishName, d.Description, d.Stock, d.DishId)
+	if err != nil {
+		log.Printf("record update dish with error %s\n", err.Error())
+		return err
+	}
+	return nil
+}
