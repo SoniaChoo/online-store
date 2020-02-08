@@ -74,5 +74,6 @@ func UpdateDish(d *model.Dish) error {
 		log.Printf("record update dish with error %s\n", err.Error())
 		return err
 	}
+
 	return nil
 }

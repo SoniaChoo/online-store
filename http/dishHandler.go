@@ -15,8 +15,8 @@ const (
 	BadJsonDish                 = "Dish show detail info wrong"
 	RequestParameterMissingDish = "RestId, DishPrice, DishStock should not be zero, DishName, Description should not be empty"
 	SuccessfullyAddDish         = "Dish %s is successfully added!"
-	SuccessfullyUpdateDish = "Dish %d is successfully updated!"
-RequestUpdateNotAvailable = "after updated, price/dishname/description/stock should be zero or empty"
+	SuccessfullyUpdateDish      = "Dish %d is successfully updated!"
+	RequestUpdateNotAvailable   = "after updated, price/dishname/description/stock should be zero or empty"
 )
 
 func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
@@ -126,9 +126,9 @@ func UpdateHandlerDish(w http.ResponseWriter, r *http.Request) {
 
 	//check avariable
 	if dish.Price == 0 || dish.DishName == "" || dish.Description == "" || dish.Stock == 0 {
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, RequestUpdateNotAvailable)
-			return
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, RequestUpdateNotAvailable)
+		return
 	}
 
 	//update dish detail

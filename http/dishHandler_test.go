@@ -141,7 +141,7 @@ func TestAddHandlerDish(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != fmt.Sprintf(SuccessfullyAddDish,"maocai") {
+	if string(b) != fmt.Sprintf(SuccessfullyAddDish, "maocai") {
 		t.Fatal("expect successfully add, got other")
 	}
 }
@@ -194,12 +194,12 @@ func TestUpdateHandlerDishWithNotAvailable(t *testing.T) {
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			t.Fatal("read response body error")
-		}
-		if string(b) != RequestUpdateNotAvailable {
-			t.Fatal("expect parameter not available error, got other")
-		}
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+	if string(b) != RequestUpdateNotAvailable {
+		t.Fatal("expect parameter not available error, got other")
+	}
 }
 
 func TestUpdateHandlerDish(t *testing.T) {
