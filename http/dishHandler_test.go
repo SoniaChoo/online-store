@@ -176,7 +176,7 @@ func TestUpdateHandlerDishWithBadJSon(t *testing.T) {
 
 func TestUpdateHandlerDishWithNotAvailable(t *testing.T) {
 	body := strings.NewReader(`{"price":0,"dishname":"maocai","description":"sichuan cai, is delicious","stock":10,"dishid":1}`)
-	req, err := http.NewRequest(http.MethodPost, "dish/update", body)
+	req, err := http.NewRequest(http.MethodPost, "/dish/update", body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -190,6 +190,42 @@ func TestUpdateHandlerDishWithNotAvailable(t *testing.T) {
 	resp := w.Result()
 
 	if resp.StatusCode != http.StatusInternalServerError {
-		t.Fatal("expect ")
+		t.Fatal("expect 500, got other")
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Fatal("read response body error")
+		}
+		if string(b) != RequestUpdateNotAvailable {
+			t.Fatal("expect parameter not available error, got other")
+		}
+}
+
+func TestUpdateHandlerDish(t *testing.T) {
+	body := strings.NewReader(`{"price":888,"dishname":"maocai","description":"sichuan cai, is delicious","stock":10,"dishid":1}`)
+	req, err := http.NewRequest(http.MethodPost, "/dish/update", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/dish/update", UpdateHandlerDish)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatal("expect 200, got other")
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+	if string(b) != fmt.Sprintf(SuccessfullyUpdateDish, 1) {
+		t.Fatal("expect successfully update dish, got other")
 	}
 }
