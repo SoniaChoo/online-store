@@ -1,7 +1,8 @@
-package http
+package test
 
 import (
 	"fmt"
+	http2 "github.com/SoniaChoo/online-store/http"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -19,7 +20,7 @@ func TestDetailHandlerDishWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/detail", DetailHandlerDish)
+	mux.HandleFunc("/dish/detail", http2.DetailHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -32,7 +33,7 @@ func TestDetailHandlerDishWithBadJson(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonDishDetail {
+	if string(b) != http2.BadJsonDishDetail {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -47,7 +48,7 @@ func TestDetailHandlerDish(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/detail", DetailHandlerDish)
+	mux.HandleFunc("/dish/detail", http2.DetailHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -72,7 +73,7 @@ func TestAddHandlerDishWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/add", AddHandlerDish)
+	mux.HandleFunc("/dish/add", http2.AddHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -85,7 +86,7 @@ func TestAddHandlerDishWithBadJson(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonDishAdd {
+	if string(b) != http2.BadJsonDishAdd {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -100,7 +101,7 @@ func TestAddHandlerDishWithMissParameter(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/add", AddHandlerDish)
+	mux.HandleFunc("/dish/add", http2.AddHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -113,7 +114,7 @@ func TestAddHandlerDishWithMissParameter(t *testing.T) {
 	if err != nil {
 		t.Fatal("expect missing parameter error, got other")
 	}
-	if string(b) != RequestParameterMissingDish {
+	if string(b) != http2.RequestParameterMissingDish {
 		t.Fatal("expect missing parameter error, got other")
 	}
 }
@@ -128,7 +129,7 @@ func TestAddHandlerDish(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/add", AddHandlerDish)
+	mux.HandleFunc("/dish/add", http2.AddHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -141,7 +142,7 @@ func TestAddHandlerDish(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != fmt.Sprintf(SuccessfullyAddDish, "maocai") {
+	if string(b) != fmt.Sprintf(http2.SuccessfullyAddDish, "maocai") {
 		t.Fatal("expect successfully add, got other")
 	}
 }
@@ -156,7 +157,7 @@ func TestUpdateHandlerDishWithBadJSon(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/update", UpdateHandlerDish)
+	mux.HandleFunc("/dish/update", http2.UpdateHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -169,7 +170,7 @@ func TestUpdateHandlerDishWithBadJSon(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonDishUpdate {
+	if string(b) != http2.BadJsonDishUpdate {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -184,7 +185,7 @@ func TestUpdateHandlerDishWithNotAvailable(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/update", UpdateHandlerDish)
+	mux.HandleFunc("/dish/update", http2.UpdateHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -197,7 +198,7 @@ func TestUpdateHandlerDishWithNotAvailable(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != RequestUpdateNotAvailable {
+	if string(b) != http2.RequestUpdateNotAvailable {
 		t.Fatal("expect parameter not available error, got other")
 	}
 }
@@ -212,7 +213,7 @@ func TestUpdateHandlerDish(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/update", UpdateHandlerDish)
+	mux.HandleFunc("/dish/update", http2.UpdateHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -225,7 +226,7 @@ func TestUpdateHandlerDish(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != fmt.Sprintf(SuccessfullyUpdateDish, 1) {
+	if string(b) != fmt.Sprintf(http2.SuccessfullyUpdateDish, 1) {
 		t.Fatal("expect successfully update dish, got other")
 	}
 }
@@ -240,7 +241,7 @@ func TestSearchByDishNameHandlerDishWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/search/name", SearchByDishNameHandlerDish)
+	mux.HandleFunc("/dish/search/name", http2.SearchByDishNameHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -254,7 +255,7 @@ func TestSearchByDishNameHandlerDishWithBadJson(t *testing.T) {
 		t.Fatal("read response body error")
 	}
 
-	if string(b) != BadJsonDishSearch {
+	if string(b) != http2.BadJsonDishSearch {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -269,7 +270,7 @@ func TestSearchByDishNameHandlerDish(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/dish/search/name", SearchByDishNameHandlerDish)
+	mux.HandleFunc("/dish/search/name", http2.SearchByDishNameHandlerDish)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()

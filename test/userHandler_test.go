@@ -1,7 +1,8 @@
-package http
+package test
 
 import (
 	"fmt"
+	http2 "github.com/SoniaChoo/online-store/http"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -19,7 +20,7 @@ func TestRegisterHandlerWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/register", RegisterHandler)
+	mux.HandleFunc("/user/register", http2.RegisterHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -34,7 +35,7 @@ func TestRegisterHandlerWithBadJson(t *testing.T) {
 		t.Fatal("read response body error")
 	}
 	fmt.Println(string(b))
-	if string(b) != BadJsonRegister {
+	if string(b) != http2.BadJsonRegister {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -49,7 +50,7 @@ func TestRegisterHandlerWithMissingParameter(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/register", RegisterHandler)
+	mux.HandleFunc("/user/register", http2.RegisterHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -63,7 +64,7 @@ func TestRegisterHandlerWithMissingParameter(t *testing.T) {
 		t.Fatal("read response body error")
 	}
 
-	if string(b) != RequestRegisterParameterMissing {
+	if string(b) != http2.RequestRegisterParameterMissing {
 		t.Fatal("expect missing paramater error, got other")
 	}
 }
@@ -78,7 +79,7 @@ func TestRegisterHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/register", RegisterHandler)
+	mux.HandleFunc("/user/register", http2.RegisterHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -92,7 +93,7 @@ func TestRegisterHandler(t *testing.T) {
 		t.Fatal("read response body error")
 	}
 
-	if string(b) != fmt.Sprintf(SuccessfullyRegister, "1888888") {
+	if string(b) != fmt.Sprintf(http2.SuccessfullyRegister, "1888888") {
 		t.Fatal("expect successfully registered, got other")
 	}
 }
@@ -107,7 +108,7 @@ func TestLoginHandlerWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/login", LoginHandler)
+	mux.HandleFunc("/user/login", http2.LoginHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -122,7 +123,7 @@ func TestLoginHandlerWithBadJson(t *testing.T) {
 		t.Fatal("read response body error")
 	}
 	fmt.Println(string(b))
-	if string(b) != BadJsonLogin {
+	if string(b) != http2.BadJsonLogin {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -137,7 +138,7 @@ func TestLoginHandlerWithMissingParameter(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/login", LoginHandler)
+	mux.HandleFunc("/user/login", http2.LoginHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -151,7 +152,7 @@ func TestLoginHandlerWithMissingParameter(t *testing.T) {
 		t.Fatal("read response body error")
 	}
 
-	if string(b) != RequestLoginParameterMissing {
+	if string(b) != http2.RequestLoginParameterMissing {
 		t.Fatal("expect missing paramater error, got other")
 	}
 
@@ -167,7 +168,7 @@ func TestLoginHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/login", LoginHandler)
+	mux.HandleFunc("/user/login", http2.LoginHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -181,7 +182,7 @@ func TestLoginHandler(t *testing.T) {
 		t.Fatal("read respone body error")
 	}
 
-	if string(b) != fmt.Sprintf(SuccessfullyLogin, "1888888") {
+	if string(b) != fmt.Sprintf(http2.SuccessfullyLogin, "1888888") {
 		t.Fatal("expect successfully login in, got other")
 	}
 }
@@ -196,7 +197,7 @@ func TestRetrieveIdHandlerWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/retrieve", RetrieveIdHandler)
+	mux.HandleFunc("/user/retrieve", http2.RetrieveIdHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -209,7 +210,7 @@ func TestRetrieveIdHandlerWithBadJson(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonRetrieve {
+	if string(b) != http2.BadJsonRetrieve {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -224,7 +225,7 @@ func TestRetrieveIdHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/retrieve/userid", RetrieveIdHandler)
+	mux.HandleFunc("/user/retrieve/userid", http2.RetrieveIdHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -254,7 +255,7 @@ func TestRetrievePhoneHandlerWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/retrieve/phone", RetrievePhoneHandler)
+	mux.HandleFunc("/user/retrieve/phone", http2.RetrievePhoneHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -267,7 +268,7 @@ func TestRetrievePhoneHandlerWithBadJson(t *testing.T) {
 	if err != nil {
 		t.Fatal("read responser body error")
 	}
-	if string(b) != BadJsonRetrieve {
+	if string(b) != http2.BadJsonRetrieve {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -282,7 +283,7 @@ func TestRetrievePhoneHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/retrieve/phone", RetrievePhoneHandler)
+	mux.HandleFunc("/user/retrieve/phone", http2.RetrievePhoneHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -307,7 +308,7 @@ func TestRetrieveNicknameHandlerWithBadJson(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/retrieve/nickname", RetrieveNicknameHandler)
+	mux.HandleFunc("/user/retrieve/nickname", http2.RetrieveNicknameHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
@@ -320,7 +321,7 @@ func TestRetrieveNicknameHandlerWithBadJson(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonRetrieve {
+	if string(b) != http2.BadJsonRetrieve {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -335,7 +336,7 @@ func TestRetrieveNicknameHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/user/retrieve/nickname", RetrieveNicknameHandler)
+	mux.HandleFunc("/user/retrieve/nickname", http2.RetrieveNicknameHandler)
 	mux.ServeHTTP(w, req)
 
 	resp := w.Result()
