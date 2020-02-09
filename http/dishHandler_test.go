@@ -32,7 +32,7 @@ func TestDetailHandlerDishWithBadJson(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonDish {
+	if string(b) != BadJsonDishDetail {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -85,7 +85,7 @@ func TestAddHandlerDishWithBadJson(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonDish {
+	if string(b) != BadJsonDishAdd {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -169,7 +169,7 @@ func TestUpdateHandlerDishWithBadJSon(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != BadJsonDish {
+	if string(b) != BadJsonDishUpdate {
 		t.Fatal("expect json format error, got other")
 	}
 }
@@ -227,5 +227,58 @@ func TestUpdateHandlerDish(t *testing.T) {
 	}
 	if string(b) != fmt.Sprintf(SuccessfullyUpdateDish, 1) {
 		t.Fatal("expect successfully update dish, got other")
+	}
+}
+
+func TestSearchByDishNameHandlerDishWithBadJson(t *testing.T) {
+	body := strings.NewReader(``)
+	req, err := http.NewRequest(http.MethodPost, "/dish/search/name", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/dish/search/name", SearchByDishNameHandlerDish)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatal("expect 400, got other")
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+
+	if string(b) != BadJsonDishSearch {
+		t.Fatal("expect json format error, got other")
+	}
+}
+
+func TestSearchByDishNameHandlerDish(t *testing.T) {
+	body := strings.NewReader(`{"dishname":"mao"}`)
+	req, err := http.NewRequest(http.MethodPost, "/dish/search/name", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/dish/search/name", SearchByDishNameHandlerDish)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatal("expect 200, got other")
+	}
+
+	if _, err := ioutil.ReadAll(resp.Body); err != nil {
+		t.Fatal("read response body error")
 	}
 }

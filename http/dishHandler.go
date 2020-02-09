@@ -11,12 +11,16 @@ import (
 )
 
 const (
-	SuccessfullyShowdishDetail  = "%v dish's detail is successfully showed ad following: %v\n"
-	BadJsonDish                 = "Dish show detail info wrong"
-	RequestParameterMissingDish = "RestId, DishPrice, DishStock should not be zero, DishName, Description should not be empty"
-	SuccessfullyAddDish         = "Dish %s is successfully added!"
-	SuccessfullyUpdateDish      = "Dish %d is successfully updated!"
-	RequestUpdateNotAvailable   = "after updated, price/dishname/description/stock should be zero or empty"
+	SuccessfullyShowdishDetail       = "%v dish's detail is successfully showed ad following: %v\n"
+	BadJsonDishDetail                = "Dish show detail info wrong"
+	RequestParameterMissingDish      = "RestId, DishPrice, DishStock should not be zero, DishName, Description should not be empty"
+	BadJsonDishAdd                   = "Dish add info wrong"
+	SuccessfullyAddDish              = "Dish %s is successfully added!"
+	BadJsonDishUpdate                = "Dish update info wrong"
+	SuccessfullyUpdateDish           = "Dish %d is successfully updated!"
+	RequestUpdateNotAvailable        = "after updated, price/dishname/description/stock should be zero or empty"
+	BadJsonDishSearch                = "Dish searchinfo wrong "
+	SuccessfullySearchByDishNameDish = "dishname = %s is successfully searched as following: %v\n"
 )
 
 func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +39,7 @@ func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBytes, &dish); err != nil {
 		log.Printf("Read dish info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, BadJsonDish)
+		fmt.Fprintf(w, BadJsonDishDetail)
 		return
 	}
 
@@ -76,7 +80,7 @@ func AddHandlerDish(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBytes, &dish); err != nil {
 		log.Printf("Read dish info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, BadJsonDish)
+		fmt.Fprintf(w, BadJsonDishAdd)
 		return
 	}
 
@@ -120,7 +124,7 @@ func UpdateHandlerDish(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBytes, &dish); err != nil {
 		log.Printf("Read dish info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, BadJsonDish)
+		fmt.Fprintf(w, BadJsonDishUpdate)
 		return
 	}
 
@@ -141,4 +145,38 @@ func UpdateHandlerDish(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, SuccessfullyUpdateDish, dish.DishId)
+}
+
+func SearchByDishNameHandlerDish(w http.ResponseWriter, r *http.Request) {
+	//get the request info
+	reqBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Read request error! Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Dish request error!")
+		return
+	}
+	defer r.Body.Close()
+
+	//unmarshal the byte into dish data
+	var dish model.Dish
+	if err = json.Unmarshal(reqBytes, &dish); err != nil {
+		log.Printf("Read dish info error! Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, BadJsonDishSearch)
+		return
+	}
+
+	//search by dishname in database
+	dishes, err := db.SearchByDishNameDish(&dish)
+	if err != nil {
+		log.Printf("search dishs by dishname %s failed, error is %s\n", dish.DishName, err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "search dishs by dish name %s failed, error is %s\n", dish.DishName, err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, SuccessfullySearchByDishNameDish, dish.DishName, dishes)
+
 }
