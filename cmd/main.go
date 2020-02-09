@@ -17,5 +17,6 @@ func main() {
 	http.HandleFunc("/dish/detail", myHttp.DetailHandlerDish)
 	http.HandleFunc("/dish/add", myHttp.AddHandlerDish)
 	http.HandleFunc("/dish/update", myHttp.UpdateHandlerDish)
+	http.HandleFunc("/dish/search", myHttp.SearchByDishNameHandlerDish)
 	http.ListenAndServe(":12345", nil)
 }

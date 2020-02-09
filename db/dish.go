@@ -77,3 +77,33 @@ func UpdateDish(d *model.Dish) error {
 
 	return nil
 }
+
+func SearchByDishNameDish(d *model.Dish) ([]*model.Dish, error) {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return nil, err
+	}
+
+	//start to excute SQL query
+	dishes := []*model.Dish{}
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	row, err := db.QueryContext(ctx, "select * from dish where dish_name like ?", "%"+d.DishName+"%")
+	if err != nil {
+		log.Printf("record search dish by dishname %s with error %s\n", d.DishName, err.Error())
+		return nil, err
+	}
+	defer row.Close()
+
+	for row.Next() {
+		temp := &model.Dish{}
+		if err = row.Scan(&temp.DishId, &temp.RestId, &temp.Price, &temp.DishName, &temp.Description, &temp.Stock, &temp.Sales, &temp.Favorite, &temp.CreatTime, &temp.UpdateTime); err != nil {
+			log.Printf("record search dish by dishname %s in loop with error %s\n", d.DishName, err.Error())
+			return nil, err
+		}
+		dishes = append(dishes, temp)
+	}
+
+	return dishes, nil
+}
