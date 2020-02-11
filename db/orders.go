@@ -7,6 +7,10 @@ import (
 	//"github.com/SoniaChoo/online-store/model"
 )
 
+const (
+	InCartStatus = -1
+)
+
 // NewCart is to insert a order info into database when user register
 func NewCart(userid int) error {
 	db, err := DBFactory()
@@ -18,8 +22,7 @@ func NewCart(userid int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 
-	_, err = db.QueryContext(ctx, "insert orders(user_id, status,price) values(?,?,?)",
-		userid, -1, 0)
+	_, err = db.QueryContext(ctx, "insert orders(user_id, status, price) values(?,?,?)", userid, InCartStatus, 0)
 	if err != nil {
 		log.Printf("record inserting with error %s\n", err.Error())
 		return err

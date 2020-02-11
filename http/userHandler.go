@@ -79,7 +79,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if len(users) == 0 || len(users) > 1 {
 		log.Printf("len(users) should be 1")
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "the result of this user should be unique, but it's not, error is %s\n", err.Error())
+		fmt.Fprintf(w, "the result of this user should be unique, but it's %d", len(users))
 		return
 	}
 	userid := users[0].UserId
