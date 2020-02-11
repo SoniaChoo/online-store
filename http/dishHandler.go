@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -22,6 +23,7 @@ const (
 	BadJsonDishSearch                   = "Dish search info wrong "
 	SuccessfullySearchByDishNameDish    = "dishname like %s is successfully searched as following: %v\n"
 	SuccessfullySearchByDescriptionDish = "description like %s is successfully searched as following: %v\n"
+	RequestWithSpaceOnly                = "description should not be only contain space"
 )
 
 func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
@@ -198,6 +200,13 @@ func SearchByDescriptionHandlerDish(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Read dish info error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, BadJsonDishSearch)
+		return
+	}
+
+	//check if the request is no sense
+	if strings.Trim(dish.Description, " ") == "" {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, RequestWithSpaceOnly)
 		return
 	}
 

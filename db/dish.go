@@ -116,16 +116,16 @@ func SearchByDescriptionDish(d *model.Dish) ([]*model.Dish, error) {
 	}
 
 	//start to excute SQL query
-	dishs := []*model.Dish{}
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	row, err := db.QueryContext(ctx, "select * from dish where  description like ?", "%"+d.Description+"%")
+	row, err := db.QueryContext(ctx, "select * from dish where description like ?", "%"+d.Description+"%")
 	if err != nil {
 		log.Printf("record search dish by description %s with error %s\n", d.Description, err.Error())
 		return nil, err
 	}
 	defer row.Close()
 
+	dishs := []*model.Dish{}
 	for row.Next() {
 		temp := &model.Dish{}
 		if err = row.Scan(&temp.DishId, &temp.RestId, &temp.Price, &temp.DishName, &temp.Description, &temp.Stock, &temp.Sales, &temp.Favorite, &temp.CreatTime, &temp.UpdateTime); err != nil {

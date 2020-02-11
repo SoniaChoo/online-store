@@ -311,8 +311,37 @@ func TestSearchByDescriptionHandlerDishWithBadJson(t *testing.T) {
 	}
 }
 
+func TestSearchByDescriptionHandlerDishWithSpaceOnly(t *testing.T) {
+	body := strings.NewReader(`{"description":" "}`)
+	req, err := http.NewRequest(http.MethodPost, "/dish/search/description", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/dish/search/description", SearchByDescriptionHandlerDish)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusInternalServerError {
+		t.Fatal("expect 500, got other")
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+
+	if string(b) != RequestWithSpaceOnly {
+		t.Fatal("expect request only have space error, got other")
+	}
+}
+
 func TestSearchByDescriptionHandlerDish(t *testing.T) {
-	body := strings.NewReader(`{"description":"is"}`)
+	body := strings.NewReader(`{"description":" "}`)
 	req, err := http.NewRequest(http.MethodPost, "/dish/search/description", body)
 	if err != nil {
 		t.Fatal(err)
