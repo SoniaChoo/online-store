@@ -125,14 +125,14 @@ func SearchByDescriptionDish(d *model.Dish) ([]*model.Dish, error) {
 	}
 	defer row.Close()
 
-	dishs := []*model.Dish{}
+	dishes := []*model.Dish{}
 	for row.Next() {
 		temp := &model.Dish{}
 		if err = row.Scan(&temp.DishId, &temp.RestId, &temp.Price, &temp.DishName, &temp.Description, &temp.Stock, &temp.Sales, &temp.Favorite, &temp.CreatTime, &temp.UpdateTime); err != nil {
 			log.Printf("record search dish by description %s in loop with error %s\n", d.Description, err.Error())
 			return nil, err
 		}
-		dishs = append(dishs, temp)
+		dishes = append(dishes, temp)
 	}
-	return dishs, nil
+	return dishes, nil
 }

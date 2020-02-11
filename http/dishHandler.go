@@ -12,16 +12,16 @@ import (
 )
 
 const (
-	SuccessfullyShowdishDetail          = "%v dish's detail is successfully showed ad following: %v\n"
+	SuccessfullyShowDishesDetail          = "%v dish's detail is successfully showed ad following: %v\n"
 	BadJsonDishDetail                   = "Dish show detail info wrong"
 	RequestParameterMissingDish         = "RestId, DishPrice, DishStock should not be zero, DishName, Description should not be empty"
 	BadJsonDishAdd                      = "Dish add info wrong"
 	SuccessfullyAddDish                 = "Dish %s is successfully added!"
 	BadJsonDishUpdate                   = "Dish update info wrong"
 	SuccessfullyUpdateDish              = "Dish %d is successfully updated!"
-	RequestUpdateNotAvailable           = "after updated, price/dishname/description/stock should be zero or empty"
+	RequestUpdateNotAvailable           = "after updated, price/Dishname/description/stock should be zero or empty"
 	BadJsonDishSearch                   = "Dish search info wrong "
-	SuccessfullySearchByDishNameDish    = "dishname like %s is successfully searched as following: %v\n"
+	SuccessfullySearchByDishNameDish    = "Dishname like %s is successfully searched as following: %v\n"
 	SuccessfullySearchByDescriptionDish = "description like %s is successfully searched as following: %v\n"
 	RequestWithSpaceOnly                = "description should not be only contain space"
 )
@@ -64,7 +64,7 @@ func DetailHandlerDish(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, SuccessfullyShowdishDetail, dish.DishId, details[0])
+	fmt.Fprintf(w, SuccessfullyShowDishesDetail, dish.DishId, details[0])
 }
 
 func AddHandlerDish(w http.ResponseWriter, r *http.Request) {
@@ -173,9 +173,9 @@ func SearchByDishNameHandlerDish(w http.ResponseWriter, r *http.Request) {
 	//search by dishname in database
 	dishes, err := db.SearchByDishNameDish(&dish)
 	if err != nil {
-		log.Printf("search dishs by dishname %s failed, error is %s\n", dish.DishName, err.Error())
+		log.Printf("search dishes by dishname %s failed, error is %s\n", dish.DishName, err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "search dishs by dish name %s failed, error is %s\n", dish.DishName, err.Error())
+		fmt.Fprintf(w, "search dishes by dish name %s failed, error is %s\n", dish.DishName, err.Error())
 		return
 	}
 
@@ -204,21 +204,22 @@ func SearchByDescriptionHandlerDish(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//check if the request is no sense
-	if strings.Trim(dish.Description, " ") == "" {
+	dish.Description = strings.TrimSpace(dish.Description)
+	if dish.Description == "" {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, RequestWithSpaceOnly)
 		return
 	}
 
 	//search by description in database
-	dishs, err := db.SearchByDescriptionDish(&dish)
+	dishes, err := db.SearchByDescriptionDish(&dish)
 	if err != nil {
-		log.Printf("search dishs by description %s failed, error is %s\n", dish.Description, err.Error())
+		log.Printf("search dishes by description %s failed, error is %s\n", dish.Description, err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "searh dishs by description %s failed, error is %s\n", dish.Description, err.Error())
+		fmt.Fprintf(w, "searh dishes by description %s failed, error is %s\n", dish.Description, err.Error())
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, SuccessfullySearchByDescriptionDish, dish.Description, dishs)
+	fmt.Fprintf(w, SuccessfullySearchByDescriptionDish, dish.Description, dishes)
 }
