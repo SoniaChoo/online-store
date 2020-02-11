@@ -66,6 +66,31 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//get userid
+	users, err := db.RetrieveUserPhone(&user)
+	if err != nil {
+		log.Printf("creat user failed, error is %s\n", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "retrieve user by phone %s failed!", user.Phone)
+		return
+	}
+
+	//judge if the length of users equal to 1, and get userid
+	if len(users) == 0 || len(users) > 1 {
+		log.Printf("len(users) should be 1")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "the result of this user should be unique, but it's not, error is %s\n", err.Error())
+		return
+	}
+	userid := users[0].UserId
+
+	//use userid to new a cart
+	if err = db.NewCart(userid); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "new a cart failed, error is %s\n", err.Error())
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, SuccessfullyRegister, user.Phone)
 }
