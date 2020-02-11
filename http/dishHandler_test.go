@@ -341,7 +341,7 @@ func TestSearchByDescriptionHandlerDishWithSpaceOnly(t *testing.T) {
 }
 
 func TestSearchByDescriptionHandlerDish(t *testing.T) {
-	body := strings.NewReader(`{"description":" "}`)
+	body := strings.NewReader(`{"description":"is"}`)
 	req, err := http.NewRequest(http.MethodPost, "/dish/search/description", body)
 	if err != nil {
 		t.Fatal(err)
