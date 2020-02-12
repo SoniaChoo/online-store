@@ -6,7 +6,7 @@ type Orders struct {
 	OrderId    int
 	UserId     int
 	Status     int
-	Price      float64
+	TotalPrice float64
 	CreatTime  time.Time
 	UpdateTime time.Time
 }

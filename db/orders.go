@@ -50,3 +50,61 @@ func UpdatePriceInOrderDetail(d *model.Dish) error {
 
 	return nil
 }
+
+func GetOrderIdInTableOrder(o *model.Orders) ([]*model.Orders, error) {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return nil, err
+	}
+
+	//start to excute SQL query
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	row, err := db.QueryContext(ctx, "select * from orders where user_id = ?", o.UserId)
+	if err != nil {
+		log.Printf("record search orders by userid = %d with error %s\n", o.UserId, err.Error())
+		return nil, err
+	}
+	defer row.Close()
+
+	orderids := []*model.Orders{}
+	for row.Next() {
+		temp := &model.Orders{}
+		if err = row.Scan(&temp.OrderId, &temp.UserId, &temp.Status, &temp.TotalPrice, &temp.CreatTime, &temp.UpdateTime); err != nil {
+			log.Printf("record search orders by userid =  %d in loop with error %s\n", o.OrderId, err.Error())
+			return nil, err
+		}
+		orderids = append(orderids, temp)
+	}
+	return orderids, nil
+}
+
+func ShowCartOrder(orderid int) ([]*model.Order_detail, error) {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return nil, err
+	}
+
+	//start to excute SQL query
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	row, err := db.QueryContext(ctx, "select * from order_detail where order_id = ? and status = ?", orderid, InCartStatus)
+	if err != nil {
+		log.Printf("record search order_detail by orderid = %d with error %s\n", orderid, err.Error())
+		return nil, err
+	}
+	defer row.Close()
+
+	carts := []*model.Order_detail{}
+	for row.Next() {
+		temp := &model.Order_detail{}
+		if err = row.Scan(&temp.DetailId, &temp.RestId, &temp.OrderId, &temp.DishId, &temp.Price, &temp.Number, &temp.Status); err != nil {
+			log.Printf("record search order_detail by orderid =  %d in loop with error %s\n", orderid, err.Error())
+			return nil, err
+		}
+		carts = append(carts, temp)
+	}
+	return carts, nil
+}
