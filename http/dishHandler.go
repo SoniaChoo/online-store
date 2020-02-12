@@ -147,9 +147,9 @@ func UpdateHandlerDish(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = db.UpdatePriceInOrderDetail(&dish); err != nil {
-		log.Printf("update dishid = %s price in order_detail failed, error is %s\n", dish.DishId, err.Error())
+		log.Printf("update dishid = %d price in order_detail failed, error is %s\n", dish.DishId, err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "update dishid = %s price in order_detail failed, error is %s\n", dish.DishId, err.Error())
+		fmt.Fprintf(w, "update dishid = %d price in order_detail failed, error is %s\n", dish.DishId, err.Error())
 		return
 	}
 
