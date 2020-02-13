@@ -43,11 +43,11 @@ func ShowCartHandlerOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//judge if len(details) = 1
-	if len(orderids) == 0 || len(orderids) > 1 {
-		log.Printf("length of orderids should be 1")
+	//judge if len(details) = 1, must be 1, because every userid always has a cart since register.if not one, code has problem,it's different from Showdishdetail
+	if len(orderids) != 1 {
+		log.Printf("orderids should be existed, and length of it should be 1")
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "the result of this orderids should be unique, but it's length = %d", len(orderids))
+		fmt.Fprintf(w, "the result of this orderids should be exist and unique, but it's length = %d", len(orderids))
 		return
 	}
 	orderId := orderids[0].OrderId

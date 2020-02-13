@@ -61,7 +61,7 @@ func GetOrderIdInTableOrder(o *model.Orders) ([]*model.Orders, error) {
 	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	row, err := db.QueryContext(ctx, "select * from orders where user_id = ?", o.UserId)
+	row, err := db.QueryContext(ctx, "select * from orders where user_id = ? and status = ?", o.UserId, InCartStatus)
 	if err != nil {
 		log.Printf("record search orders by userid = %d with error %s\n", o.UserId, err.Error())
 		return nil, err
@@ -90,7 +90,7 @@ func ShowCartOrder(order_id int) ([]*model.Order_detail, error) {
 	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	row, err := db.QueryContext(ctx, "select * from order_detail where order_id = ? and status = ?", order_id, InCartStatus)
+	row, err := db.QueryContext(ctx, "select * from order_detail where order_id = ?", order_id)
 	if err != nil {
 		log.Printf("record search order_detail by orderid = %d with error %s\n", order_id, err.Error())
 		return nil, err
@@ -120,7 +120,7 @@ func UpdateTotalPriceInOrder(total_price float64, order_id int) error {
 	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	_, err = db.QueryContext(ctx, "update orders set total_price = ? where order_id = ? and status = ?", total_price, order_id, InCartStatus)
+	_, err = db.QueryContext(ctx, "update orders set total_price = ? where order_id = ?", total_price, order_id)
 	if err != nil {
 		log.Printf("record update total_price in table order by orderid = %d with error %s\n", order_id, err.Error())
 		return err
