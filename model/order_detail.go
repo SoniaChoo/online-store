@@ -7,4 +7,5 @@ type Order_detail struct {
 	OrderId  int
 	Price    float64
 	Number   int
+	Status   int
 }
