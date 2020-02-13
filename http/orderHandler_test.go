@@ -10,7 +10,7 @@ import (
 
 func TestShowCartHandlerOrderWithBadJson(t *testing.T) {
 	body := strings.NewReader(``)
-	req, err := http.NewRequest(http.MethodPost, "order/showcart", body)
+	req, err := http.NewRequest(http.MethodPost, "/order/showcart", body)
 	if err != nil {
 		t.Fatal(err)
 	}
