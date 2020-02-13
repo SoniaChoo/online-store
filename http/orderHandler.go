@@ -19,7 +19,7 @@ func ShowCartHandlerOrder(w http.ResponseWriter, r *http.Request) {
 	//get the request info
 	reqBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Read requset error! Error is %\n", err.Error())
+		log.Printf("Read requset error! Error is %s\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "Order request error!")
 		return
@@ -39,7 +39,7 @@ func ShowCartHandlerOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("select by userid in order to get order_id with error, error is %s\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "select by userid = %d in table order failed")
+		fmt.Fprintf(w, "select by userid = %d in table order failed", order.UserId)
 		return
 	}
 
