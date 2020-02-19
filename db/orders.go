@@ -51,7 +51,7 @@ func UpdatePriceInOrderDetail(d *model.Dish) error {
 	return nil
 }
 
-func GetOrderIdInTableOrder(o *model.Orders) ([]*model.Orders, error) {
+func GetOrderIdInTableOrder(userId int) ([]*model.Orders, error) {
 	db, err := DBFactory()
 	if err != nil {
 		log.Printf("error connect database, %v\n", err)
@@ -61,9 +61,9 @@ func GetOrderIdInTableOrder(o *model.Orders) ([]*model.Orders, error) {
 	//start to excute SQL query
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
-	row, err := db.QueryContext(ctx, "select * from orders where user_id = ? and status = ?", o.UserId, InCartStatus)
+	row, err := db.QueryContext(ctx, "select * from orders where user_id = ? and status = ?", userId, InCartStatus)
 	if err != nil {
-		log.Printf("record search orders by userid = %d with error %s\n", o.UserId, err.Error())
+		log.Printf("record search orders by userid = %d with error %s\n", userId, err.Error())
 		return nil, err
 	}
 	defer row.Close()
@@ -72,7 +72,7 @@ func GetOrderIdInTableOrder(o *model.Orders) ([]*model.Orders, error) {
 	for row.Next() {
 		temp := &model.Orders{}
 		if err = row.Scan(&temp.OrderId, &temp.UserId, &temp.Status, &temp.TotalPrice, &temp.CreatTime, &temp.UpdateTime); err != nil {
-			log.Printf("record search orders by userid =  %d in loop with error %s\n", o.OrderId, err.Error())
+			log.Printf("record search orders by userid =  %d in loop with error %s\n", userId, err.Error())
 			return nil, err
 		}
 		orderids = append(orderids, temp)
@@ -123,6 +123,113 @@ func UpdateTotalPriceInOrder(total_price float64, order_id int) error {
 	_, err = db.QueryContext(ctx, "update orders set total_price = ? where order_id = ?", total_price, order_id)
 	if err != nil {
 		log.Printf("record update total_price in table order by orderid = %d with error %s\n", order_id, err.Error())
+		return err
+	}
+	return nil
+}
+
+//add dish to cart
+func InsertDishToCart(detail *model.Order_detail) error {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return err
+	}
+
+	//start to excute SQL query
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	_, err = db.QueryContext(ctx, "insert into order_detail(detail_id, rest_id, order_id, dish_id, price, number, status) Values(?,?,?,?,?,?,?)", detail.DetailId, detail.RestId, detail.OrderId, detail.DishId, detail.Price, detail.Number, InCartStatus)
+	if err != nil {
+		log.Printf("record insert into table order_detail with error, error is %s\n", err.Error())
+		return err
+	}
+	return nil
+}
+
+func UpdateDishToCart(detail *model.Order_detail) error {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return err
+	}
+
+	//start to excute SQL query
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	if _, err = db.QueryContext(ctx, "update order_detail set number = ? where dish_id = ?", detail.Number, detail.DishId); err != nil {
+		log.Printf("record update dish number in table order_detail with error, error is %s\n", err.Error())
+		return err
+	}
+	return nil
+}
+
+//update dish favorite when add dish to cart
+func UpdateDishFavorite(favorite, dish_id int) error {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return err
+	}
+
+	//start to excute SQL query
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	//in the SQL statement, "," can not be replaced by "and"
+	_, err = db.QueryContext(ctx, "update dish set favorite = ? where dish_id = ? ", favorite, dish_id)
+	if err != nil {
+		log.Printf("record update dish with error %s\n", err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func AddToCartOrder(detail *model.Order_detail) error {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connect database, %v\n", err)
+		return err
+	}
+
+	//start to excute SQL query
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	//search if cart has this dish
+	row, err := db.QueryContext(ctx, "select * from order_detail where dish_id = ? and order_id = ?", detail.DishId, detail.OrderId)
+	if err != nil {
+		log.Printf("record select by dish_id and order_id in table order_detail with error, error is %s\n", err.Error())
+		return err
+	}
+
+	carts := []*model.Order_detail{}
+	for row.Next() {
+		temp := &model.Order_detail{}
+		if err = row.Scan(&temp.DetailId, &temp.RestId, &temp.OrderId, &temp.DishId, &temp.Price, &temp.Number, &temp.Status); err != nil {
+			log.Printf("record select by dish_id = %d and order_id = %d in table order_detail  in loop with error %s\n", detail.DishId, detail.OrderId, err.Error())
+			return err
+		}
+		carts = append(carts, temp)
+	}
+
+	//if len(carts) = 0, insert to order_detail, else, update dish number according dish_id
+	if len(carts) == 0 {
+		if err = InsertDishToCart(detail); err != nil {
+			log.Printf("record insert into table order_detail with error, error is %s\n", err.Error())
+			return err
+		}
+		return nil
+	}
+	//brfore upadte dish number, we need to get the original number of this dish in cart
+	detail.Number += carts[0].Number
+	if err = UpdateDishToCart(detail); err != nil {
+		log.Printf("record update dish number in table order_detail with error, error is %s\n", err.Error())
+		return err
+	}
+
+	//update dish favorite when add dish to cart
+	if err = UpdateDishFavorite(detail.Number, detail.DishId); err != nil {
+		log.Printf("record update dish favorite in table dish when add dish to cart with error, error is %s\n", err.Error())
 		return err
 	}
 	return nil
