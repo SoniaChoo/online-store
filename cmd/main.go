@@ -20,5 +20,6 @@ func main() {
 	http.HandleFunc("/dish/search/name", myHttp.SearchByDishNameHandlerDish)
 	http.HandleFunc("/dish/search/description", myHttp.SearchByDescriptionHandlerDish)
 	http.HandleFunc("/order/showcart", myHttp.ShowCartHandlerOrder)
+	http.HandleFunc("/order/addtocart", myHttp.AddToCartHandlerOrder)
 	http.ListenAndServe(":12345", nil)
 }

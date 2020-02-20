@@ -66,7 +66,7 @@ func TestRegisterHandlerRestWithMissParameter(t *testing.T) {
 }
 
 func TestRegisterHandlerRest(t *testing.T) {
-	body := strings.NewReader(`{"phone":"1999999", "restname":"yuyuyu", "address":"yangxin", "userid":2}`)
+	body := strings.NewReader(`{"phone":"1999995", "restname":"yuyuyu", "address":"yangxin", "userid":2}`)
 	req, err := http.NewRequest(http.MethodPost, "/rest/register", body)
 	if err != nil {
 		t.Fatal(err)
@@ -88,7 +88,7 @@ func TestRegisterHandlerRest(t *testing.T) {
 	if err != nil {
 		t.Fatal("read response body error")
 	}
-	if string(b) != fmt.Sprintf(SuccessfullyRegisterRest, "1999999") {
+	if string(b) != fmt.Sprintf(SuccessfullyRegisterRest, "1999995") {
 		t.Fatal("expect successfully register, got other")
 	}
 }
@@ -166,7 +166,7 @@ func TestRetrieveHandlerRestWithBadJson(t *testing.T) {
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil{
+	if err != nil {
 		t.Fatal("read response body error")
 	}
 	if string(b) != BadJsonRest {
