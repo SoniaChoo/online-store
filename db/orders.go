@@ -165,7 +165,7 @@ func UpdateDishToCart(detail *model.Order_detail) error {
 }
 
 //update dish favorite when add dish to cart
-func UpdateDishFavorite(newfavorite, dish_id int) error {
+func UpdateDishFavorite(change_favorite, dish_id int) error {
 	db, err := DBFactory()
 	if err != nil {
 		log.Printf("error connect database, %v\n", err)
@@ -176,7 +176,7 @@ func UpdateDishFavorite(newfavorite, dish_id int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 	//in the SQL statement, "," can not be replaced by "and"
-	_, err = db.QueryContext(ctx, "update dish set favorite = favorite + ? where dish_id = ? ", newfavorite, dish_id)
+	_, err = db.QueryContext(ctx, "update dish set favorite = favorite + ? where dish_id = ? ", change_favorite, dish_id)
 	if err != nil {
 		log.Printf("record update dish with error %s\n", err.Error())
 		return err
@@ -237,6 +237,75 @@ func AddToCartOrder(detail *model.Order_detail) error {
 	detail.DetailId = carts[0].DetailId
 	if err = UpdateDishToCart(detail); err != nil {
 		log.Printf("record update dish number in table order_detail with error, error is %s\n", err.Error())
+		return err
+	}
+	return nil
+}
+
+func DeleteDetail(detail *model.Order_detail) error {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connct database, %v\n", err)
+		return err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	if _, err = db.QueryContext(ctx, "delete from order_detail where detail_id = ?", detail.DetailId); err != nil {
+		log.Printf("record delete dish with error %s\n", err.Error())
+		return err
+	}
+	return nil
+}
+
+func DeleteOrUpdateDishInCart(detail *model.Order_detail) error {
+	db, err := DBFactory()
+	if err != nil {
+		log.Printf("error connct database, %v\n", err)
+		return err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	//search number of dish, we get the data after updated, so we need to get the deta  number of dihs in order_detail table by detail_id between the change.
+	row, err := db.QueryContext(ctx, "select number from order_detail where detail_id = ?", detail.DetailId)
+	if err != nil {
+		log.Printf("record select by detail_id in table order_detail with errir, error is %s\n", err.Error())
+		return err
+	}
+
+	oldNumbers := []int{}
+	for row.Next() {
+		temp := 0
+		if err = row.Scan(&temp); err != nil {
+			log.Printf("record loop get the old number of dish with error, error is %s\n", err.Error())
+			return err
+		}
+		oldNumbers = append(oldNumbers, temp)
+	}
+
+	//judge if len(oldNumbers) = 1
+	if len(oldNumbers) != 1 {
+		log.Printf("oldNumbers should be existed, and length of it should be 1")
+		return nil
+	}
+	oldNumber := oldNumbers[0]
+	change_favorite := detail.Number - oldNumber
+	if err = UpdateDishFavorite(change_favorite, detail.DishId); err != nil {
+		log.Printf("record update dish favorite in table dish when add dish to cart with error, error is %s\n", err.Error())
+		return err
+	}
+
+	//uodate number of dish in order_detail, delete or update, if number = 0 delete, else, update
+	if detail.Number == 0 {
+		if err = DeleteDetail(detail); err != nil {
+			log.Printf("record delete form table order_detail with error, error is %s\n", err.Error())
+			return err
+		}
+		return nil
+	}
+	if err = UpdateDishToCart(detail); err != nil {
+		log.Printf("record update table order_detail with error, error is %s\n", err.Error())
 		return err
 	}
 	return nil

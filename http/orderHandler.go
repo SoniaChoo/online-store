@@ -11,10 +11,12 @@ import (
 )
 
 const (
-	BadJsonShowCart       = "Show order info wrong"
-	SuccessfullyShowCart  = "the cart of orderid = %d is successfully as following: %v"
-	BadJsonAddToCart      = "Add to cart info wrong"
-	SuccessfullyAddToCart = "the dish dishid = %d is successfully added into cart"
+	BadJsonShowCart                  = "Show order info wrong"
+	SuccessfullyShowCart             = "the cart of orderid = %d is successfully as following: %v"
+	BadJsonAddToCart                 = "Add to cart info wrong"
+	SuccessfullyAddToCart            = "the dish dishid = %d is successfully added into cart"
+	BadJsonDeleteDishInCart          = "Delete dish in cart info wrong"
+	SuccessfullyDeleteOrUpdateInCart = "dish = %d is successfully delete in cart"
 )
 
 func ShowCartHandlerOrder(w http.ResponseWriter, r *http.Request) {
@@ -143,4 +145,34 @@ func AddToCartHandlerOrder(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, SuccessfullyAddToCart, detail.DishId)
+}
+
+func DeleteDishInCartHandlerOrder(w http.ResponseWriter, r *http.Request) {
+	//get the request info
+	reqBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Read request error! Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Order request error!")
+		return
+	}
+
+	//unmarshal the byte into order info
+	var detail model.Order_detail
+	if err = json.Unmarshal(reqBytes, &detail); err != nil {
+		log.Printf("Read order info error! Error is %s\n", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, BadJsonDeleteDishInCart)
+		return
+	}
+
+	if err = db.DeleteOrUpdateDishInCart(&detail); err != nil {
+		log.Printf("delete or update dish in cart with error, error is %s\n", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "detailid = %d delete or update dish in cart failed", detail.DetailId)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, SuccessfullyDeleteOrUpdateInCart, detail.DishId)
 }

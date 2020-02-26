@@ -146,3 +146,60 @@ func TestAddToCartHandlerOrderWithAdd(t *testing.T) {
 		t.Fatal("expect successfully add dish to cart, got other")
 	}
 }
+
+func TestDeleteDishInCartHandlerOrderWithBadJson(t *testing.T) {
+	body := strings.NewReader(``)
+	req, err := http.NewRequest(http.MethodPost, "/order/deletedishincart", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/order/deletedishincart", DeleteDishInCartHandlerOrder)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatal("expect 400, got other")
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+	if string(b) != BadJsonDeleteDishInCart {
+		t.Fatal("expect json format, got other")
+	}
+}
+
+func TestDeleteDishInCartHandlerOrderWithDelete(t *testing.T) {
+	body := strings.NewReader(`{"detailid":1,"dishid":1,"restid":1,"orderid":1,"price":888,"number":0,"status":-1}`)
+	req, err := http.NewRequest(http.MethodPost, "/order/deletedishincart", body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	w := httptest.NewRecorder()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/order/deletedishincart", DeleteDishInCartHandlerOrder)
+	mux.ServeHTTP(w, req)
+
+	resp := w.Result()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatal("expect 200, got other")
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("read response body error")
+	}
+
+	if string(b) != fmt.Sprintf(SuccessfullyDeleteOrUpdateInCart, 1) {
+		t.Fatal("expect successfully delete dish in cart, got other")
+	}
+}
