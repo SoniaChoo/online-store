@@ -19,10 +19,9 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
-      - dep
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - checkout
 
       # specify any bash command here prefixed with `run: `
+      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: /go/bin/dep ensure
       - run: go test -v ./...
