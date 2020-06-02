@@ -19,8 +19,10 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
+      - install dep
+      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: go get -v -t -d ./...
+      - run: dep ensure
       - run: go test -v ./...
